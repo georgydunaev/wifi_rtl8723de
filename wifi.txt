@@ -107,16 +107,16 @@ https://ubuntuforums.org/showthread.php?t=2384889
 
 ----------------------------------------------------------------------------
 
-sudo modprobe -r rtl8723be
-sudo modprobe rtl8723be ant_sel=1
+sudo modprobe -r rtl8723de
+sudo modprobe rtl8723de ant_sel=1
 
 
-sudo modprobe -r rtl8723be
+sudo modprobe -r rtl8723de
 
 Then we load it using the antenna selection parameter set to 1
 Code:
 
-sudo modprobe rtl8723be ant_sel=1
+sudo modprobe rtl8723de ant_sel=1
 
 See what wifi's are found and signal strength
 Code:
@@ -126,11 +126,11 @@ iwlist scan | egrep -i 'ssid|quality'
 Then we unload the module and load it using antenna #2
 Code:
 
-sudo modprobe -r rtl8723be
+sudo modprobe -r rtl8723de
 
 Code:
 
-sudo modprobe rtl8723be ant_sel=2
+sudo modprobe rtl8723de ant_sel=2
 
 See what wifi are found
 Code:
@@ -140,13 +140,13 @@ iwlist scan | egrep -i 'ssid|quality'
 Which results were better?
 If ant_sel=1 was best
 Code:
-
-echo "options rtl8723be ant_sel=1" | sudo tee /etc/modprobe.d/rtlant.conf
+f
+echo "options rtl8723de ant_sel=1" | sudo tee /etc/modprobe.d/rtlant.conf
 
 If ant_sel=2 was best
 Code:
 
-echo "options rtl8723be ant_sel=2" | sudo tee /etc/modprobe.d/rtlant.conf
+echo "options rtl8723de ant_sel=2" | sudo tee /etc/modprobe.d/rtlant.conf
 
 You shouldn't have to worry about it after a reboot 
 
