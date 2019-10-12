@@ -1,0 +1,152 @@
+ sudo apt-get dist-upgrade
+удалит старые пакеты, разрешит конфликты, доставит необходимые зависимости, доставит новые пакеты, если требуется. Более умный и гибкий инструмент обновления системы.
+
+uname -r  
+version of the kernel
+sudo iwconfig
+
+https://www.linuxmint.com.ru/viewtopic.php?t=2989
+
+https://github.com/jeremyb31/rtl8723de
+
+hAfter rebooting if you notice low signal strength, try
+sudo modprobe -r rtl8723de && sleep 10 && sudo modprobe rtl8723de ant_sel=2
+
+ttps://github.com/smlinux/rtl8723de/issues/5
+
+https://toster.ru/q/517043
+"в файле /home/dev/rtl8821CE_WiFi_linux_v5.2.5.1_25561.20171207_COEX20170310-1212/include/osdep_service_linux.h
+
+в 22 строке добавьте #include <linux/timer.h>
+
+добавить после строки 293(instead of next lines)
+timer_setup(ptimer, pfunc, (u32)cntx);
+а эти строки убрать.
+
+ptimer->function = pfunc;
+ptimer->data = (unsigned long)cntx;
+init_timer(ptimer);"
+
+
+
+sudo dkms add ./rtl8723de
+sudo dkms install rtl8723de/5.1.1.8_21285.20171026_COEX20170111-1414
+
+Kernel preparation unnecessary for this kernel.  Skipping...
+
+Building module:
+cleaning build area...
+'make' all KVER=4.15.0-54-generic....................................
+Signing module:
+ - /var/lib/dkms/rtl8723de/5.1.1.8_21285.20171026_COEX20170111-1414/4.15.0-54-generic/x86_64/module/rtl8723de.ko
+Secure Boot not enabled on this system.
+cleaning build area...
+
+DKMS: build completed.
+
+rtl8723de.ko:
+Running module version sanity check.
+ - Original module
+   - No original module exists within this kernel
+ - Installation
+   - Installing to /lib/modules/4.15.0-54-generic/kernel/drivers/net/wireless/
+
+depmod...
+
+DKMS: install completed.
+
+
+reboot
+
+
+
+
+
+/var/lib/dkms/rtl8723de/5.1.1.8_21285.20171026_COEX20170111-1414/build/make.log
+sudo dkms remove rtl8723de/5.1.1.8_21285.20171026_COEX20170111-1414 --all
+
+
+
+
+
+
+
+Was trying to install the driver for RTL8723DE for quite sometime with your instructions but always encountered the below error.
+
+ 
+
+ 
+
+modprobe: ERROR: Error running install command for rtlwifi
+modprobe: ERROR: could not insert 'rtl8723de': Operation not permitted
+
+ 
+
+ 
+
+DId some digging around and found that we need the extended branch for this WIFI adaptor.
+
+ 
+sudo apt-get install libelf-dev
+ 
+
+git clone https://github.com/lwfinger/rtlwifi_new.git
+cd rtlwifi_new
+git checkout origin/extended -b extended
+sudo make install 
+sudo modprobe rtl8723de
+
+Now everything works just fine for me, running Fedora 30 with kernel 5.0.13-300.fc30.x86_64.
+sudo dkms status
+sudo depmod -a
+sudo modprobe rtl8723de
+
+reboot!
+
+https://ubuntuforums.org/showthread.php?t=2384889
+
+----------------------------------------------------------------------------
+
+sudo modprobe -r rtl8723be
+sudo modprobe rtl8723be ant_sel=1
+
+
+sudo modprobe -r rtl8723be
+
+Then we load it using the antenna selection parameter set to 1
+Code:
+
+sudo modprobe rtl8723be ant_sel=1
+
+See what wifi's are found and signal strength
+Code:
+
+iwlist scan | egrep -i 'ssid|quality'
+
+Then we unload the module and load it using antenna #2
+Code:
+
+sudo modprobe -r rtl8723be
+
+Code:
+
+sudo modprobe rtl8723be ant_sel=2
+
+See what wifi are found
+Code:
+
+iwlist scan | egrep -i 'ssid|quality'
+
+Which results were better?
+If ant_sel=1 was best
+Code:
+
+echo "options rtl8723be ant_sel=1" | sudo tee /etc/modprobe.d/rtlant.conf
+
+If ant_sel=2 was best
+Code:
+
+echo "options rtl8723be ant_sel=2" | sudo tee /etc/modprobe.d/rtlant.conf
+
+You shouldn't have to worry about it after a reboot 
+
